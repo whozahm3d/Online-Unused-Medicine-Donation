@@ -143,6 +143,8 @@ namespace MedicineDonationApp
                 return;
             }
 
+            selectedMedicines.Clear();
+
             foreach (var item in clbMedicines.CheckedItems)
             {
                 selectedMedicines[item.ToString()] = quantity;

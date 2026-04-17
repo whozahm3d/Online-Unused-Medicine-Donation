@@ -130,13 +130,13 @@ namespace MedicineDonationApp
 
             MessageBox.Show("Registration Successful!");
             this.Hide();
-            new LoginForm("status").Show();
+            new LoginForm().Show();
         }
 
         private void BtnBack_Click(object sender, EventArgs e)
         {
             this.Hide();
-            new LoginForm("status").Show();
+            new LoginForm().Show();
         }
     }
 }

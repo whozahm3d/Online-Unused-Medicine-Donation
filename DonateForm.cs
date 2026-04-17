@@ -85,6 +85,7 @@ namespace MedicineDonationApp
             AttachLiveValidation(txtPhone);
             AttachLiveValidation(txtMedicine);
             AttachLiveValidation(txtQuantity);
+            dtpExpiration.ValueChanged += (s, e) => dtpExpiration.CalendarMonthBackground = Color.White;
         }
 
         private void BtnSubmit_Click(object sender, EventArgs e)
@@ -104,28 +105,45 @@ namespace MedicineDonationApp
         {
             bool isValid = true;
 
-            if (!Regex.IsMatch(txtFullName.Text, @"^[a-zA-Z\s]+$"))
+            if (string.IsNullOrWhiteSpace(txtFullName.Text) || !Regex.IsMatch(txtFullName.Text, @"^[a-zA-Z\s]+$"))
             {
                 txtFullName.BackColor = Color.LightCoral;
                 isValid = false;
             }
 
-            if (!txtEmail.Text.EndsWith("@gmail.com"))
+            if (string.IsNullOrWhiteSpace(txtEmail.Text) || !txtEmail.Text.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
             {
                 txtEmail.BackColor = Color.LightCoral;
                 isValid = false;
             }
 
-            if (!Regex.IsMatch(txtPhone.Text, @"^\d+$"))
+            if (string.IsNullOrWhiteSpace(txtPhone.Text) || !Regex.IsMatch(txtPhone.Text, @"^\d+$"))
             {
                 txtPhone.BackColor = Color.LightCoral;
                 isValid = false;
             }
 
-            if (!Regex.IsMatch(txtQuantity.Text, @"^\d+$"))
+            if (string.IsNullOrWhiteSpace(txtMedicine.Text))
+            {
+                txtMedicine.BackColor = Color.LightCoral;
+                isValid = false;
+            }
+
+            if (!int.TryParse(txtQuantity.Text, out int quantity) || quantity <= 0)
             {
                 txtQuantity.BackColor = Color.LightCoral;
                 isValid = false;
+            }
+
+            if (dtpExpiration.Value.Date <= DateTime.Today)
+            {
+                dtpExpiration.CalendarMonthBackground = Color.LightCoral;
+                isValid = false;
+            }
+
+            if (!isValid)
+            {
+                MessageBox.Show("Please correct highlighted fields. Quantity must be positive and expiry date must be in the future.");
             }
 
             return isValid;
