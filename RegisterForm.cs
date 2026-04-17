@@ -120,6 +120,8 @@ namespace MedicineDonationApp
         {
             var username = this.Controls["txtUsername"].Text.Trim();
             var password = this.Controls["txtPassword"].Text.Trim();
+            var username = this.Controls["txtUsername"].Text;
+            var password = this.Controls["txtPassword"].Text;
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {

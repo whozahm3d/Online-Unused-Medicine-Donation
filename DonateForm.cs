@@ -59,6 +59,7 @@ namespace MedicineDonationApp
                 Left = 50,
                 Width = 250,
                 MinDate = DateTime.Today.AddDays(1)
+                Width = 250
             };
 
             Button btnSubmit = new Button()
@@ -87,6 +88,7 @@ namespace MedicineDonationApp
             AttachLiveValidation(txtPhone);
             AttachLiveValidation(txtMedicine);
             AttachLiveValidation(txtQuantity);
+            dtpExpiration.ValueChanged += (s, e) => dtpExpiration.CalendarMonthBackground = Color.White;
         }
 
         private void BtnSubmit_Click(object sender, EventArgs e)
@@ -113,6 +115,7 @@ namespace MedicineDonationApp
             }
 
             if (string.IsNullOrWhiteSpace(txtEmail.Text) || !IsValidEmail(txtEmail.Text))
+            if (string.IsNullOrWhiteSpace(txtEmail.Text) || !txtEmail.Text.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
             {
                 txtEmail.BackColor = Color.LightCoral;
                 isValid = false;
@@ -138,6 +141,7 @@ namespace MedicineDonationApp
 
             if (dtpExpiration.Value.Date <= DateTime.Today)
             {
+                dtpExpiration.CalendarMonthBackground = Color.LightCoral;
                 isValid = false;
             }
 
