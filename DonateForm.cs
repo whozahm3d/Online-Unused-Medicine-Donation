@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -56,7 +57,8 @@ namespace MedicineDonationApp
             {
                 Top = yOffset + 20,
                 Left = 50,
-                Width = 250
+                Width = 250,
+                MinDate = DateTime.Today.AddDays(1)
             };
 
             Button btnSubmit = new Button()
@@ -104,28 +106,44 @@ namespace MedicineDonationApp
         {
             bool isValid = true;
 
-            if (!Regex.IsMatch(txtFullName.Text, @"^[a-zA-Z\s]+$"))
+            if (string.IsNullOrWhiteSpace(txtFullName.Text) || !Regex.IsMatch(txtFullName.Text, @"^[a-zA-Z\s]+$"))
             {
                 txtFullName.BackColor = Color.LightCoral;
                 isValid = false;
             }
 
-            if (!txtEmail.Text.EndsWith("@gmail.com"))
+            if (string.IsNullOrWhiteSpace(txtEmail.Text) || !IsValidEmail(txtEmail.Text))
             {
                 txtEmail.BackColor = Color.LightCoral;
                 isValid = false;
             }
 
-            if (!Regex.IsMatch(txtPhone.Text, @"^\d+$"))
+            if (string.IsNullOrWhiteSpace(txtPhone.Text) || !Regex.IsMatch(txtPhone.Text, @"^\d+$"))
             {
                 txtPhone.BackColor = Color.LightCoral;
                 isValid = false;
             }
 
-            if (!Regex.IsMatch(txtQuantity.Text, @"^\d+$"))
+            if (string.IsNullOrWhiteSpace(txtMedicine.Text))
+            {
+                txtMedicine.BackColor = Color.LightCoral;
+                isValid = false;
+            }
+
+            if (!int.TryParse(txtQuantity.Text, out int quantity) || quantity <= 0)
             {
                 txtQuantity.BackColor = Color.LightCoral;
                 isValid = false;
+            }
+
+            if (dtpExpiration.Value.Date <= DateTime.Today)
+            {
+                isValid = false;
+            }
+
+            if (!isValid)
+            {
+                MessageBox.Show("Please correct highlighted fields. Quantity must be positive and expiry date must be in the future.");
             }
 
             return isValid;
@@ -134,6 +152,19 @@ namespace MedicineDonationApp
         private void AttachLiveValidation(TextBox textBox)
         {
             textBox.TextChanged += (s, e) => textBox.BackColor = Color.White;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                _ = new MailAddress(email);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
 
         private Label CreateLabel(string text, int top)
