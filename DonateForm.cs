@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -56,6 +57,8 @@ namespace MedicineDonationApp
             {
                 Top = yOffset + 20,
                 Left = 50,
+                Width = 250,
+                MinDate = DateTime.Today.AddDays(1)
                 Width = 250
             };
 
@@ -111,6 +114,7 @@ namespace MedicineDonationApp
                 isValid = false;
             }
 
+            if (string.IsNullOrWhiteSpace(txtEmail.Text) || !IsValidEmail(txtEmail.Text))
             if (string.IsNullOrWhiteSpace(txtEmail.Text) || !txtEmail.Text.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
             {
                 txtEmail.BackColor = Color.LightCoral;
@@ -152,6 +156,19 @@ namespace MedicineDonationApp
         private void AttachLiveValidation(TextBox textBox)
         {
             textBox.TextChanged += (s, e) => textBox.BackColor = Color.White;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                _ = new MailAddress(email);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
 
         private Label CreateLabel(string text, int top)

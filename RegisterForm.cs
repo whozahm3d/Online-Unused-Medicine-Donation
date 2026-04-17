@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace MedicineDonationApp
@@ -117,6 +118,8 @@ namespace MedicineDonationApp
 
         private void BtnRegister_Click(object sender, EventArgs e)
         {
+            var username = this.Controls["txtUsername"].Text.Trim();
+            var password = this.Controls["txtPassword"].Text.Trim();
             var username = this.Controls["txtUsername"].Text;
             var password = this.Controls["txtPassword"].Text;
 
@@ -124,6 +127,19 @@ namespace MedicineDonationApp
             {
                 MessageBox.Show("Please fill both fields.");
                 return;
+            }
+
+            if (File.Exists("users.txt"))
+            {
+                bool usernameExists = File.ReadAllLines("users.txt")
+                    .Select(line => line.Split(','))
+                    .Any(parts => parts.Length > 0 && string.Equals(parts[0], username, StringComparison.OrdinalIgnoreCase));
+
+                if (usernameExists)
+                {
+                    MessageBox.Show("Username already exists. Please choose a different username.");
+                    return;
+                }
             }
 
             File.AppendAllText("users.txt", username + "," + password + Environment.NewLine);
